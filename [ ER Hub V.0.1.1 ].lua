@@ -221,4 +221,14 @@ TitleLabel.TextScaled = true
 TitleLabel.Font = Enum.Font.SourceSansBold
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.TextYAlignment = Enum.TextYAlignment.Center
-TitleLabel.Parent = Frame
+TitleLabel.Parent = FrameFrame
+
+local version = "V 0.1.1"
+
+pcall(function()
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "ER-Hub" .. version,
+        Text = "โหลดสำเร็จ!",
+        Duration = 5
+    })
+end)
