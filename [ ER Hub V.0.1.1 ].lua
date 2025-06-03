@@ -215,20 +215,21 @@ local TitleLabel = Instance.new("TextLabel")
 TitleLabel.Text = "ER Hub V 0.1.1"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TitleLabel.BackgroundTransparency = 1
-TitleLabel.Size = UDim2.new(0, 150, 0, 30)
+TitleLabel.Size = UDim2.new(1, -120, 0, 30) -- ยืดความกว้างแต่ไม่ไปทับปุ่ม
 TitleLabel.Position = UDim2.new(0, 10, 0, 5)
 TitleLabel.TextScaled = true
 TitleLabel.Font = Enum.Font.SourceSansBold
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.TextYAlignment = Enum.TextYAlignment.Center
-TitleLabel.Parent = FrameFrame
+TitleLabel.ZIndex = 10
+TitleLabel.Parent = Frame
 
 local version = "V 0.1.1"
 
 pcall(function()
     game.StarterGui:SetCore("SendNotification", {
         Title = "ER-Hub" .. version,
-        Text = "โหลดสำเร็จ!",
+        Text = "โหลดเสร็จสิ้น!",
         Duration = 5
     })
 end)
