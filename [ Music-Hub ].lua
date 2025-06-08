@@ -19,11 +19,11 @@ ToggleButton.Size = UDim2.new(0, 40, 0, 40)
 ToggleButton.Position = UDim2.new(0, 10, 0, 10)
 ToggleButton.Text = "M"
 ToggleButton.BackgroundColor3 = desaturateColor(Color3.fromRGB(40,40,40))
-ToggleButton.BackgroundTransparency = 0.3
+ToggleButton.BackgroundTransparency = 1
 ToggleButton.TextColor3 = Color3.fromRGB(1,1,1)
 ToggleButton.Font = Enum.Font.SourceSansBold
 ToggleButton.TextScaled = true
-ToggleButton.BorderColor3 = Color3.fromRGB(0,0,0)
+ToggleButton.BorderColor3 = Color3.fromRGB(1,1,1)
 ToggleButton.Parent = MainGui
 
 local ToggleUICorner = Instance.new("UICorner")
