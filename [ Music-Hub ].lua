@@ -359,6 +359,14 @@ OkBtn.MouseButton1Click:Connect(function()
     end
 end)
 
+MinimizeButton.MouseButton1Click:Connect(function()More actions
+    Frame.Visible = false
+end)
+
+ToggleButton.MouseButton1Click:Connect(function()
+    Frame.Visible = not Frame.Visible
+end)
+
 -- เครดิตมุมล่างขวา
 local ByLabel = Instance.new("TextLabel")
 ByLabel.Text = "by [ERROR 0999cc] TH [official]"
