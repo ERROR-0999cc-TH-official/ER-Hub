@@ -235,6 +235,12 @@ VolumeDownButton.MouseButton1Click:Connect(function()
 end)
 
 -- กล่องยืนยัน
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
+
+-- กล่องยืนยัน
 local ConfirmGui = Instance.new("ScreenGui")
 ConfirmGui.Name = "ConfirmCloseGui"
 ConfirmGui.Parent = PlayerGui
@@ -243,19 +249,17 @@ ConfirmGui.Enabled = false
 
 local ConfirmFrame = Instance.new("Frame")
 ConfirmFrame.Size = UDim2.new(0, 360, 0, 160)
-ConfirmFrame.Position = UDim2.new(0.5, -75, 0.5, -50)
+ConfirmFrame.Position = UDim2.new(0.5, -180, 0.5, -80) -- กึ่งกลางหน้าจอ
 ConfirmFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 ConfirmFrame.BorderSizePixel = 0
-ConfirmFrame.Active = true  
-ConfirmFrame.Draggable = true  
 ConfirmFrame.Parent = ConfirmGui
 
 local stroke = Instance.new("UIStroke")
-        stroke.Color = Color3.fromRGB(0, 0, 0) -- สีดำ
-        stroke.Thickness = 2
-        stroke.Transparency = 0 -- ทึบ 100%
-        stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        stroke.Parent = ConfirmFrame
+stroke.Color = Color3.fromRGB(0, 0, 0)
+stroke.Thickness = 2
+stroke.Transparency = 0
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+stroke.Parent = ConfirmFrame
 
 local ConfirmCorner = Instance.new("UICorner")
 ConfirmCorner.CornerRadius = UDim.new(0, 10)
@@ -271,44 +275,81 @@ ConfirmText.TextWrapped = true
 ConfirmText.TextScaled = true
 ConfirmText.Parent = ConfirmFrame
 
+-- ปุ่ม ยกเลิก และ ตกลง
 local CancelBtn = Instance.new("TextButton")
-CancelBtn.Size = UDim2.new(0.4, 0, 0, 30)
-CancelBtn.Position = UDim2.new(0.45, 0, 1, -40)
+CancelBtn.Size = UDim2.new(0.45, -5, 0, 40)
+CancelBtn.Position = UDim2.new(0, 10, 1, -50)
 CancelBtn.Text = "ยกเลิก"
-CancelBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+CancelBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 CancelBtn.TextColor3 = Color3.new(1, 1, 1)
 CancelBtn.Font = Enum.Font.SourceSansBold
 CancelBtn.TextScaled = true
 CancelBtn.Parent = ConfirmFrame
 
 local OkBtn = Instance.new("TextButton")
-OkBtn.Size = UDim2.new(0.4, 0, 0, 30)
-OkBtn.Position = UDim2.new(9.5, 0, 1, -40)
+OkBtn.Size = UDim2.new(0.45, -5, 0, 40)
+OkBtn.Position = UDim2.new(0.55, 5, 1, -50)
 OkBtn.Text = "ตกลง"
-OkBtn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+OkBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 OkBtn.TextColor3 = Color3.new(1, 1, 1)
 OkBtn.Font = Enum.Font.SourceSansBold
 OkBtn.TextScaled = true
 OkBtn.Parent = ConfirmFrame
 
--- ขอบโค้ง
+-- ขอบโค้งปุ่ม
 for _, btn in ipairs({CancelBtn, OkBtn}) do
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = btn
 end
 
--- กดปุ่ม X ให้แสดงกล่องยืนยัน
+-- ระบบลาก ConfirmFrame แบบใหม่ (ไม่ใช้ Draggable)
+local dragging = false
+local dragInput = nil
+local dragStart = nil
+local startPos = nil
+
+ConfirmFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = ConfirmFrame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+ConfirmFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        ConfirmFrame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+-- สมมติว่า CloseButton คือปุ่ม X ใน GUI ของคุณ
 CloseButton.MouseButton1Click:Connect(function()
     ConfirmGui.Enabled = true
 end)
 
--- ปุ่มยกเลิก
 CancelBtn.MouseButton1Click:Connect(function()
     ConfirmGui.Enabled = false
 end)
 
--- ปุ่มตกลง: ซ่อน GUI ทั้งหมด
 OkBtn.MouseButton1Click:Connect(function()
     ConfirmGui:Destroy()
     for _, gui in ipairs(PlayerGui:GetChildren()) do
@@ -316,14 +357,6 @@ OkBtn.MouseButton1Click:Connect(function()
             gui.Enabled = false
         end
     end
-end)
-
-MinimizeButton.MouseButton1Click:Connect(function()
-    Frame.Visible = false
-end)
-
-ToggleButton.MouseButton1Click:Connect(function()
-    Frame.Visible = not Frame.Visible
 end)
 
 -- เครดิตมุมล่างขวา
