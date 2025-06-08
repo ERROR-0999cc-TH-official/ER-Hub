@@ -234,152 +234,20 @@ VolumeDownButton.MouseButton1Click:Connect(function()
     Sound.Volume = math.clamp(Sound.Volume - 0.2, 0, 10)
 end)
 
--- กล่องยืนยัน
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local player = Players.LocalPlayer
-local PlayerGui = player:WaitForChild("PlayerGui")
-
--- กล่องยืนยัน
-local ConfirmGui = Instance.new("ScreenGui")
-ConfirmGui.Name = "ConfirmCloseGui"
-ConfirmGui.Parent = PlayerGui
-ConfirmGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ConfirmGui.Enabled = false
-
-local ConfirmFrame = Instance.new("Frame")
-ConfirmFrame.Size = UDim2.new(0, 360, 0, 160)
-ConfirmFrame.Position = UDim2.new(0.5, -180, 0.5, -80) -- กึ่งกลางหน้าจอ
-ConfirmFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-ConfirmFrame.BorderSizePixel = 0
-ConfirmFrame.Parent = ConfirmGui
-
-local stroke = Instance.new("UIStroke")
-stroke.Color = Color3.fromRGB(0, 0, 0)
-stroke.Thickness = 2
-stroke.Transparency = 0
-stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-stroke.Parent = ConfirmFrame
-
-local ConfirmCorner = Instance.new("UICorner")
-ConfirmCorner.CornerRadius = UDim.new(0, 10)
-ConfirmCorner.Parent = ConfirmFrame
-
-local ConfirmText = Instance.new("TextLabel")
-ConfirmText.Size = UDim2.new(1, -20, 0, 40)
-ConfirmText.Position = UDim2.new(0, 10, 0, 5)
-ConfirmText.Text = "คุณต้องการที่จะปิดใช้งานใช่ไหม"
-ConfirmText.TextColor3 = Color3.fromRGB(255, 255, 255)
-ConfirmText.BackgroundTransparency = 1
-ConfirmText.TextWrapped = true
-ConfirmText.TextScaled = true
-ConfirmText.Parent = ConfirmFrame
-
--- ปุ่ม ยกเลิก และ ตกลง
-local CancelBtn = Instance.new("TextButton")
-CancelBtn.Size = UDim2.new(0.44, 0, 0, 40)
-CancelBtn.Position = UDim2.new(0.03, 0, 1, -50)
-CancelBtn.Text = "ยกเลิก"
-CancelBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-CancelBtn.TextColor3 = Color3.new(1, 1, 1)
-CancelBtn.Font = Enum.Font.SourceSansBold
-CancelBtn.TextScaled = true
-CancelBtn.Parent = ConfirmFrame
-
--- ปุ่ม ตกลง
-local OkBtn = Instance.new("TextButton")
-OkBtn.Size = UDim2.new(0.44, 0, 0, 40)
-OkBtn.Position = UDim2.new(0.53, 0, 1, -50)
-OkBtn.Text = "ตกลง"
-OkBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-OkBtn.TextColor3 = Color3.new(1, 1, 1)
-OkBtn.Font = Enum.Font.SourceSansBold
-OkBtn.TextScaled = true
-OkBtn.Parent = ConfirmFrame
-
--- ขอบโค้งปุ่ม
-for _, btn in ipairs({CancelBtn, OkBtn}) do
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 8)
-    corner.Parent = btn
-end
-
--- ระบบลาก ConfirmFrame แบบใหม่ (ไม่ใช้ Draggable)
-local dragging = false
-local dragInput = nil
-local dragStart = nil
-local startPos = nil
-
-ConfirmFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = ConfirmFrame.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-ConfirmFrame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        local delta = input.Position - dragStart
-        ConfirmFrame.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
-    end
-end)
-
--- สมมติว่า CloseButton คือปุ่ม X ใน GUI ของคุณ
 CloseButton.MouseButton1Click:Connect(function()
-    ConfirmGui.Enabled = true
-end)
-
-CancelBtn.MouseButton1Click:Connect(function()
-    ConfirmGui.Enabled = false
-end)
-
-OkBtn.MouseButton1Click:Connect(function()
-    Sound:Stop() -- <<< หยุดเพลงเมื่อกดตกลง
-    ConfirmGui:Destroy()
-    for _, gui in ipairs(PlayerGui:GetChildren()) do
-        if gui:IsA("ScreenGui") and gui.Name ~= "ConfirmCloseGui" then
-            gui.Enabled = false
-        end
+    if MainGui and MainGui.Parent then
+        MainGui:Destroy()
+        Sound:Stop()
     end
 end)
 
--- สถานะพับ GUI
-local isMinimized = false
-
--- เมื่อคลิกปุ่มพับ GUI
 MinimizeButton.MouseButton1Click:Connect(function()
     Frame.Visible = false
-    isMinimized = true
 end)
 
--- เมื่อคลิกปุ่ม Toggle GUI (ปุ่ม M)
 ToggleButton.MouseButton1Click:Connect(function()
-    if isMinimized then
-        Frame.Visible = true
-        isMinimized = false
-    else
-        Frame.Visible = not Frame.Visible
-    end
+    Frame.Visible = not Frame.Visible
 end)
-
 
 -- เครดิตมุมล่างขวา
 local ByLabel = Instance.new("TextLabel")
