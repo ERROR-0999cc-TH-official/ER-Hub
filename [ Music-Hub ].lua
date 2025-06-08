@@ -242,7 +242,7 @@ ConfirmGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ConfirmGui.Enabled = false
 
 local ConfirmFrame = Instance.new("Frame")
-ConfirmFrame.Size = UDim2.new(0, 150, 0, 100)
+ConfirmFrame.Size = UDim2.new(0, 360, 0, 160)
 ConfirmFrame.Position = UDim2.new(0.5, -75, 0.5, -50)
 ConfirmFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 ConfirmFrame.BorderSizePixel = 0
@@ -264,7 +264,7 @@ ConfirmText.Parent = ConfirmFrame
 
 local CancelBtn = Instance.new("TextButton")
 CancelBtn.Size = UDim2.new(0.4, 0, 0, 30)
-CancelBtn.Position = UDim2.new(0.05, 0, 1, -40)
+CancelBtn.Position = UDim2.new(0.45, 0, 1, -40)
 CancelBtn.Text = "ยกเลิก"
 CancelBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 CancelBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -274,7 +274,7 @@ CancelBtn.Parent = ConfirmFrame
 
 local OkBtn = Instance.new("TextButton")
 OkBtn.Size = UDim2.new(0.4, 0, 0, 30)
-OkBtn.Position = UDim2.new(0.55, 0, 1, -40)
+OkBtn.Position = UDim2.new(9.5, 0, 1, -40)
 OkBtn.Text = "ตกลง"
 OkBtn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
 OkBtn.TextColor3 = Color3.new(1, 1, 1)
