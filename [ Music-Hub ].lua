@@ -352,6 +352,7 @@ CancelBtn.MouseButton1Click:Connect(function()
 end)
 
 OkBtn.MouseButton1Click:Connect(function()
+    Sound:Stop() -- <<< หยุดเพลงเมื่อกดตกลง
     ConfirmGui:Destroy()
     for _, gui in ipairs(PlayerGui:GetChildren()) do
         if gui:IsA("ScreenGui") and gui.Name ~= "ConfirmCloseGui" then
