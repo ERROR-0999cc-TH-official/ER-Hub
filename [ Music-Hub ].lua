@@ -359,13 +359,25 @@ OkBtn.MouseButton1Click:Connect(function()
     end
 end)
 
-MinimizeButton.MouseButton1Click:Connect(function()More actions
+-- สถานะพับ GUI
+local isMinimized = false
+
+-- เมื่อคลิกปุ่มพับ GUI
+MinimizeButton.MouseButton1Click:Connect(function()
     Frame.Visible = false
+    isMinimized = true
 end)
 
+-- เมื่อคลิกปุ่ม Toggle GUI (ปุ่ม M)
 ToggleButton.MouseButton1Click:Connect(function()
-    Frame.Visible = not Frame.Visible
+    if isMinimized then
+        Frame.Visible = true
+        isMinimized = false
+    else
+        Frame.Visible = not Frame.Visible
+    end
 end)
+
 
 -- เครดิตมุมล่างขวา
 local ByLabel = Instance.new("TextLabel")
