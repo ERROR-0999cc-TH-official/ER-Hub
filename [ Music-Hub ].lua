@@ -15,12 +15,12 @@ end
 
 -- ปุ่ม Toggle GUI
 local ToggleButton = Instance.new("TextButton")
-ToggleButton.Size = UDim2.new(0, 32, 0, 32)
+ToggleButton.Size = UDim2.new(0, 40, 0, 40)
 ToggleButton.Position = UDim2.new(0, 10, 0, 10)
 ToggleButton.Text = "M"
 ToggleButton.BackgroundColor3 = desaturateColor(Color3.fromRGB(255,255,255))
 ToggleButton.BackgroundTransparency = 0.3
-ToggleButton.TextColor3 = Color3.fromRGB(0,0,0)
+ToggleButton.TextColor3 = Color3.fromRGB(1,1,1)
 ToggleButton.Font = Enum.Font.SourceSansBold
 ToggleButton.TextScaled = true
 ToggleButton.BorderColor3 = Color3.fromRGB(0,0,0)
