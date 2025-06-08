@@ -246,6 +246,8 @@ ConfirmFrame.Size = UDim2.new(0, 360, 0, 160)
 ConfirmFrame.Position = UDim2.new(0.5, -75, 0.5, -50)
 ConfirmFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 ConfirmFrame.BorderSizePixel = 0
+ConfirmFrame.Active = true  
+ConfirmFrame.Draggable = true  
 ConfirmFrame.Parent = ConfirmGui
 
 local stroke = Instance.new("UIStroke")
