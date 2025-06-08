@@ -74,7 +74,7 @@ Frame.Position = UDim2.new(0.5, 0, 0.43, 0)
 Frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 Frame.BackgroundTransparency = 0.1
 Frame.BorderSizePixel = 0
-Frame.Visible = false
+Frame.Visible = true
 Frame.Parent = MainGui
 
 local FrameCorner = Instance.new("UICorner")
@@ -114,7 +114,7 @@ local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(0,10)
 CloseCorner.Parent = CloseButton
 
--- เส้นกั้น (เต็มความกว้าง Frame)
+-- เส้นกั้น
 local Line = Instance.new("Frame")
 Line.Size = UDim2.new(1, -20, 0, 2)
 Line.Position = UDim2.new(0, 10, 0, 40)
@@ -145,7 +145,7 @@ local function createVolumeButton(name, pos, text, color)
     btn.Size = UDim2.new(0.25, 0, 0, 30)
     btn.Position = pos
     btn.Text = text
-    btn.BackgroundColor3 = desaturateColor(color)
+    btn.BackgroundColor3 = color
     btn.TextColor3 = Color3.fromRGB(255,255,255)
     btn.BorderSizePixel = 0
     btn.Font = Enum.Font.SourceSansBold
@@ -157,8 +157,9 @@ local function createVolumeButton(name, pos, text, color)
     return btn
 end
 
-local VolumeDownButton = createVolumeButton("VolumeDown", UDim2.new(0.1, 0, 0, 90), "เสียงลด", Color3.fromRGB(200, 0, 0))
-local VolumeUpButton = createVolumeButton("VolumeUp", UDim2.new(0.4, 0, 0, 90), "เสียงเพิ่ม", Color3.fromRGB(0, 200, 0))
+-- สีเทา และขยับลง
+local VolumeDownButton = createVolumeButton("VolumeDown", UDim2.new(0.1, 0, 0, 90), "เสียงลด", Color3.fromRGB(128,128,128))
+local VolumeUpButton = createVolumeButton("VolumeUp", UDim2.new(0.4, 0, 0, 90), "เสียงเพิ่ม", Color3.fromRGB(128,128,128))
 
 -- ปุ่มควบคุมเพลง
 local function createButton(name, pos, text, color)
@@ -206,16 +207,13 @@ ResumeButton.MouseButton1Click:Connect(function()
     end
 end)
 
+-- แก้ให้เพิ่มทีละ 0.2 และสูงสุด 10
 VolumeUpButton.MouseButton1Click:Connect(function()
-    if Sound.Volume < 1 then
-        Sound.Volume = math.min(1, Sound.Volume + 0.1)
-    end
+    Sound.Volume = math.clamp(Sound.Volume + 0.2, 0, 10)
 end)
 
 VolumeDownButton.MouseButton1Click:Connect(function()
-    if Sound.Volume > 0 then
-        Sound.Volume = math.max(0, Sound.Volume - 0.1)
-    end
+    Sound.Volume = math.clamp(Sound.Volume - 0.2, 0, 10)
 end)
 
 CloseButton.MouseButton1Click:Connect(function()
@@ -232,7 +230,7 @@ ToggleButton.MouseButton1Click:Connect(function()
     Frame.Visible = not Frame.Visible
 end)
 
--- "by [ERROR 0999cc] TH [official]" มุมขวาล่าง GUI เพลง
+-- เครดิตมุมล่างขวา
 local ByLabel = Instance.new("TextLabel")
 ByLabel.Text = "by [ERROR 0999cc] TH [official]"
 ByLabel.TextColor3 = Color3.fromRGB(255,255,255)
@@ -243,7 +241,7 @@ ByLabel.Position = UDim2.new(1, -10, 1, -10)
 ByLabel.TextScaled = true
 ByLabel.Parent = Frame
 
--- ข้อความมุมซ้ายบน GUI เพลง
+-- ชื่อ GUI ด้านบนซ้าย
 local TitleLabel = Instance.new("TextLabel")
 TitleLabel.Text = "Music-Hub V 0.1.2"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -257,7 +255,7 @@ TitleLabel.TextYAlignment = Enum.TextYAlignment.Center
 TitleLabel.ZIndex = 10
 TitleLabel.Parent = Frame
 
--- การแจ้งเตือน
+-- แจ้งเตือนโหลดเสร็จ
 local version = "V 0.1.2"
 pcall(function()
     game.StarterGui:SetCore("SendNotification", {
