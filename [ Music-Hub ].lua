@@ -33,7 +33,7 @@ local stroke = Instance.new("UIStroke")
         stroke.Thickness = 2
         stroke.Transparency = 0 -- ทึบ 100%
         stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        stroke.Parent = toggleButton
+        stroke.Parent = ToggleButton
 
 local ToggleUICorner = Instance.new("UICorner")
 ToggleUICorner.CornerRadius = UDim.new(0, 10)
@@ -91,7 +91,7 @@ local stroke = Instance.new("UIStroke")
         stroke.Thickness = 2
         stroke.Transparency = 0 -- ทึบ 100%
         stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        stroke.Parent = frame
+        stroke.Parent = Frame
 
 local FrameCorner = Instance.new("UICorner")
 FrameCorner.CornerRadius = UDim.new(0, 15)
