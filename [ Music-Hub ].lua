@@ -28,6 +28,13 @@ ToggleButton.Active = true
 ToggleButton.Draggable = true
 ToggleButton.Parent = MainGui
 
+local stroke = Instance.new("UIStroke")
+        stroke.Color = Color3.fromRGB(0, 0, 0) -- สีดำ
+        stroke.Thickness = 2
+        stroke.Transparency = 0 -- ทึบ 100%
+        stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        stroke.Parent = toggleButton
+
 local ToggleUICorner = Instance.new("UICorner")
 ToggleUICorner.CornerRadius = UDim.new(0, 10)
 ToggleUICorner.Parent = ToggleButton
@@ -78,6 +85,13 @@ Frame.BackgroundTransparency = 0.1
 Frame.BorderSizePixel = 0
 Frame.Visible = true
 Frame.Parent = MainGui
+
+local stroke = Instance.new("UIStroke")
+        stroke.Color = Color3.fromRGB(0, 0, 0) -- สีดำ
+        stroke.Thickness = 2
+        stroke.Transparency = 0 -- ทึบ 100%
+        stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        stroke.Parent = frame
 
 local FrameCorner = Instance.new("UICorner")
 FrameCorner.CornerRadius = UDim.new(0, 15)
