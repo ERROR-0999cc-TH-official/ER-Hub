@@ -275,7 +275,7 @@ TitleLabel.ZIndex = 10
 TitleLabel.Parent = Frame
 
 -- แจ้งเตือนโหลดเสร็จ
-local version = "V 0.1.2"
+local version = "V.1.2"
 pcall(function()
     game.StarterGui:SetCore("SendNotification", {
         Title = "Music-Hub " .. version,
