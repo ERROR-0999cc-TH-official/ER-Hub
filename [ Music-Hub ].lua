@@ -277,8 +277,8 @@ ConfirmText.Parent = ConfirmFrame
 
 -- ปุ่ม ยกเลิก และ ตกลง
 local CancelBtn = Instance.new("TextButton")
-CancelBtn.Size = UDim2.new(0.45, -5, 0, 40)
-CancelBtn.Position = UDim2.new(0, 10, 1, -50)
+CancelBtn.Size = UDim2.new(0.44, 0, 0, 40)
+CancelBtn.Position = UDim2.new(0.03, 0, 1, -50)
 CancelBtn.Text = "ยกเลิก"
 CancelBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 CancelBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -286,9 +286,10 @@ CancelBtn.Font = Enum.Font.SourceSansBold
 CancelBtn.TextScaled = true
 CancelBtn.Parent = ConfirmFrame
 
+-- ปุ่ม ตกลง
 local OkBtn = Instance.new("TextButton")
-OkBtn.Size = UDim2.new(0.45, -5, 0, 40)
-OkBtn.Position = UDim2.new(0.55, 5, 1, -50)
+OkBtn.Size = UDim2.new(0.44, 0, 0, 40)
+OkBtn.Position = UDim2.new(0.53, 0, 1, -50)
 OkBtn.Text = "ตกลง"
 OkBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 OkBtn.TextColor3 = Color3.new(1, 1, 1)
