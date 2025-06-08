@@ -23,6 +23,7 @@ ToggleButton.BackgroundTransparency = 1
 ToggleButton.TextColor3 = Color3.new(1, 1, 1)  
 ToggleButton.Font = Enum.Font.SourceSansBold
 ToggleButton.TextScaled = true
+ToggleButton.BorderColor3 = Color3.fromRGB(0,0,0)
 ToggleButton.Parent = MainGui
 
 local ToggleUICorner = Instance.new("UICorner")
