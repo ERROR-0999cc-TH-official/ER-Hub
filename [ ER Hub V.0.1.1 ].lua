@@ -1,24 +1,61 @@
-local VirtualUser = game:GetService("VirtualUser")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
 
--- Anti-AFK
-Players.LocalPlayer.Idled:Connect(function()
-    VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-    VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-end)
+-- ฟังก์ชันช่วยทำให้ GUI ลากได้
+local function makeDraggable(guiObject)
+    local dragging
+    local dragInput
+    local dragStart
+    local startPos
+
+    local function update(input)
+        local delta = input.Position - dragStart
+        guiObject.Position = UDim2.new(
+            math.clamp(startPos.X.Scale, 0, 1),
+            math.clamp(startPos.X.Offset + delta.X, 0, workspace.CurrentCamera.ViewportSize.X - guiObject.AbsoluteSize.X),
+            math.clamp(startPos.Y.Scale, 0, 1),
+            math.clamp(startPos.Y.Offset + delta.Y, 0, workspace.CurrentCamera.ViewportSize.Y - guiObject.AbsoluteSize.Y)
+        )
+    end
+
+    guiObject.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = guiObject.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    guiObject.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
+        end
+    end)
+end
+
+local function desaturateColor(color)
+    local avg = (color.R + color.G + color.B) / 3
+    return Color3.new(avg * 0.2 + color.R * 0.8, avg * 0.2 + color.G * 0.8, avg * 0.2 + color.B * 0.8)
+end
 
 -- GUI หลัก
 local MainGui = Instance.new("ScreenGui")
 MainGui.Name = "MusicGui"
 MainGui.Parent = PlayerGui
 MainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-local function desaturateColor(color)
-    local avg = (color.R + color.G + color.B) / 3
-    return Color3.new(avg * 0.2 + color.R * 0.8, avg * 0.2 + color.G * 0.8, avg * 0.2 + color.B * 0.8)
-end
 
 -- ปุ่ม Toggle GUI
 local ToggleButton = Instance.new("TextButton")
@@ -37,6 +74,8 @@ local ToggleUICorner = Instance.new("UICorner")
 ToggleUICorner.CornerRadius = UDim.new(0, 10)
 ToggleUICorner.Parent = ToggleButton
 
+makeDraggable(ToggleButton) -- ทำให้ปุ่ม E ลากได้
+
 -- GUI เพลง
 local Frame = Instance.new("Frame")
 Frame.Size = UDim2.new(0, 500, 0, 300)
@@ -51,6 +90,8 @@ Frame.Parent = MainGui
 local FrameCorner = Instance.new("UICorner")
 FrameCorner.CornerRadius = UDim.new(0, 15)
 FrameCorner.Parent = Frame
+
+makeDraggable(Frame) -- ทำให้กรอบเพลงหลักลากได้
 
 -- ปุ่ม Minimize และ Close
 local MinimizeButton = Instance.new("TextButton")
@@ -85,8 +126,8 @@ CloseCorner.Parent = CloseButton
 
 -- เส้นกั้น (เต็มความกว้าง Frame)
 local Line = Instance.new("Frame")
-Line.Size = UDim2.new(1, -20, 0, 2) -- ลบ 20 เพื่อเว้นขอบซ้ายขวา 10px
-Line.Position = UDim2.new(0, 10, 0, 40) -- อยู่ห่างจากปุ่มด้านบน 5px
+Line.Size = UDim2.new(1, -20, 0, 2)
+Line.Position = UDim2.new(0, 10, 0, 40)
 Line.BackgroundColor3 = Color3.fromRGB(0,0,0)
 Line.BorderSizePixel = 0
 Line.Parent = Frame
@@ -94,7 +135,7 @@ Line.Parent = Frame
 -- ช่องใส่ ID เพลง
 local TextBox = Instance.new("TextBox")
 TextBox.Size = UDim2.new(0.8, 0, 0, 30)
-TextBox.Position = UDim2.new(0.1, 0, 0, 50) -- อยู่ใต้เส้นกั้น 5px
+TextBox.Position = UDim2.new(0.1, 0, 0, 50)
 TextBox.PlaceholderText = "ใส่ ID เพลงที่นี่"
 TextBox.Text = ""
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -129,6 +170,11 @@ local PlayButton = createButton("Play", UDim2.new(0.1,0,0.5,0), "เล่นเ
 local StopButton = createButton("Stop", UDim2.new(0.6,0,0.5,0), "หยุดเพลง", Color3.fromRGB(200,0,0))
 local ResumeButton = createButton("Resume", UDim2.new(0.1,0,0.7,0), "เล่นต่อ", Color3.fromRGB(0,0,200))
 
+-- เพิ่มปุ่มลดเสียง
+local VolumeDownButton = createButton("VolDown", UDim2.new(0.6,0,0.7,0), "ลดเสียง", Color3.fromRGB(255, 140, 0))
+-- เพิ่มปุ่มเพิ่มเสียง
+local VolumeUpButton = createButton("VolUp", UDim2.new(0.35,0,0.7,0), "เพิ่มเสียง", Color3.fromRGB(0, 140, 255))
+
 -- Sound
 local Sound = Instance.new("Sound")
 Sound.Parent = workspace
@@ -152,13 +198,17 @@ ResumeButton.MouseButton1Click:Connect(function()
     end
 end)
 
+VolumeDownButton.MouseButton1Click:Connect(function()
+    Sound.Volume = math.clamp(Sound.Volume - 0.1, 0, 1)
+end)
+
+VolumeUpButton.MouseButton1Click:Connect(function()
+    Sound.Volume = math.clamp(Sound.Volume + 0.1, 0, 1)
+end)
+
 CloseButton.MouseButton1Click:Connect(function()
     if MainGui and MainGui.Parent then
         MainGui:Destroy()
-    end
-    local existingAFK = PlayerGui:FindFirstChild("AFKGui")
-    if existingAFK then
-        existingAFK:Destroy()
     end
 end)
 
@@ -170,35 +220,6 @@ ToggleButton.MouseButton1Click:Connect(function()
     Frame.Visible = not Frame.Visible
 end)
 
--- 🕒 Anti-AFK Text + Timer ติดใต้ปุ่มกระโดด (เลเยอร์ 0)
-local AFKGui = Instance.new("ScreenGui")
-AFKGui.Name = "AFKGui"
-AFKGui.ResetOnSpawn = false
-AFKGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-AFKGui.Parent = PlayerGui
-
-local AFKLabel = Instance.new("TextLabel")
-AFKLabel.Text = "การป้องกันการ AFK ทำงานอยู่\n00:00:00"
-AFKLabel.TextColor3 = Color3.fromRGB(255,255,255)
-AFKLabel.BackgroundTransparency = 1
-AFKLabel.Size = UDim2.new(0, 300, 0, 40)
-AFKLabel.AnchorPoint = Vector2.new(0.5, 1)
-AFKLabel.Position = UDim2.new(0.5, 350, 1, -10)
-AFKLabel.TextScaled = true
-AFKLabel.TextYAlignment = Enum.TextYAlignment.Center
-AFKLabel.TextXAlignment = Enum.TextXAlignment.Center
-AFKLabel.ZIndex = 0
-AFKLabel.Parent = AFKGui
-
-local startTime = tick()
-game:GetService("RunService").RenderStepped:Connect(function()
-    local elapsed = tick() - startTime
-    local hours = math.floor(elapsed / 3600)
-    local minutes = math.floor((elapsed % 3600) / 60)
-    local seconds = math.floor(elapsed % 60)
-    AFKLabel.Text = string.format("การป้องกันการ AFK ทำงานอยู่\n%02d:%02d:%02d", hours, minutes, seconds)
-end)
-
 -- "by [ERROR 0999cc] TH [official]" มุมขวาล่าง GUI เพลง
 local ByLabel = Instance.new("TextLabel")
 ByLabel.Text = "by [ERROR 0999cc] TH [official]"
@@ -208,28 +229,3 @@ ByLabel.Size = UDim2.new(0, 200, 0, 20)
 ByLabel.AnchorPoint = Vector2.new(1, 1)
 ByLabel.Position = UDim2.new(1, -10, 1, -10)
 ByLabel.TextScaled = true
-ByLabel.Parent = Frame
-
--- ข้อความมุมซ้ายบน GUI เพลง
-local TitleLabel = Instance.new("TextLabel")
-TitleLabel.Text = "ER Hub V 0.1.1"
-TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TitleLabel.BackgroundTransparency = 1
-TitleLabel.Size = UDim2.new(1, -120, 0, 30) -- ยืดความกว้างแต่ไม่ไปทับปุ่ม
-TitleLabel.Position = UDim2.new(0, 10, 0, 5)
-TitleLabel.TextScaled = true
-TitleLabel.Font = Enum.Font.SourceSansBold
-TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
-TitleLabel.TextYAlignment = Enum.TextYAlignment.Center
-TitleLabel.ZIndex = 10
-TitleLabel.Parent = Frame
-
-local version = "V 0.1.1"
-
-pcall(function()
-    game.StarterGui:SetCore("SendNotification", {
-        Title = "ER-Hub" .. version,
-        Text = "โหลดเสร็จสิ้น!",
-        Duration = 5
-    })
-end)
