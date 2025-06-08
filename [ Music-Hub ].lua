@@ -11,19 +11,21 @@ MainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 local function desaturateColor(color)
     local avg = (color.R + color.G + color.B) / 3
     return Color3.new(avg * 0.2 + color.R * 0.8, avg * 0.2 + color.G * 0.8, avg * 0.2 + color.B * 0.8)
-end
+end 
 
 -- ปุ่ม Toggle GUI
 local ToggleButton = Instance.new("TextButton")
+ToggleButton.Name = "ToggleButton"
 ToggleButton.Size = UDim2.new(0, 40, 0, 40)
 ToggleButton.Position = UDim2.new(0, 10, 0, 10)
-ToggleButton.Text = "M"
-ToggleButton.BackgroundColor3 = desaturateColor(Color3.fromRGB(40,40,40))
-ToggleButton.BackgroundTransparency = 0
-ToggleButton.TextColor3 = Color3.new(1, 1, 1)  
+ToggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40) -- สีไม่จาง
+ToggleButton.Text = "E"
+ToggleButton.TextColor3 = Color3.new(1, 1, 1)
 ToggleButton.Font = Enum.Font.SourceSansBold
-ToggleButton.TextScaled = true
-ToggleButton.BorderColor3 = Color3.fromRGB(0,0,0)
+ToggleButton.TextSize = 24 -- แทน TextScaled เพื่อให้เหมือนต้นฉบับ
+ToggleButton.ZIndex = 20
+ToggleButton.Active = true
+ToggleButton.Draggable = true
 ToggleButton.Parent = MainGui
 
 local ToggleUICorner = Instance.new("UICorner")
