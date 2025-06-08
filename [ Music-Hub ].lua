@@ -735,8 +735,8 @@ local function createVolumeButton(name, pos, text, color)
 end
 
 -- สีเทา และขยับลง
-local VolumeDownButton = createVolumeButton("VolumeDown", UDim2.new(0.1, 0, 0, 90), "เสียงลด", Color3.fromRGB(128,128,128))
-local VolumeUpButton = createVolumeButton("VolumeUp", UDim2.new(0.4, 0, 0, 90), "เสียงเพิ่ม", Color3.fromRGB(128,128,128))
+local VolumeDownButton = createVolumeButton("VolumeDown", UDim2.new(0.1, 0, 0, 90), "ลดเสียง", Color3.fromRGB(128,128,128))
+local VolumeUpButton = createVolumeButton("VolumeUp", UDim2.new(0.4, 0, 0, 90), "เพิ่มเสียง", Color3.fromRGB(128,128,128))
 
 -- ปุ่มควบคุมเพลง
 local function createButton(name, pos, text, color)
