@@ -204,6 +204,8 @@ local ResumeButton = createButton("Resume", UDim2.new(0.7,0,0,130), "เล่�
 local Sound = Instance.new("Sound")
 Sound.Parent = workspace
 Sound.Volume = 1
+Sound.Looped = true
+
 
 PlayButton.MouseButton1Click:Connect(function()
     local id = TextBox.Text
