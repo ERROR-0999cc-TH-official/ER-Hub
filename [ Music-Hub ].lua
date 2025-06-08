@@ -248,6 +248,13 @@ ConfirmFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 ConfirmFrame.BorderSizePixel = 0
 ConfirmFrame.Parent = ConfirmGui
 
+local stroke = Instance.new("UIStroke")
+        stroke.Color = Color3.fromRGB(0, 0, 0) -- สีดำ
+        stroke.Thickness = 2
+        stroke.Transparency = 0 -- ทึบ 100%
+        stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        stroke.Parent = ConfirmFrame
+
 local ConfirmCorner = Instance.new("UICorner")
 ConfirmCorner.CornerRadius = UDim.new(0, 10)
 ConfirmCorner.Parent = ConfirmFrame
