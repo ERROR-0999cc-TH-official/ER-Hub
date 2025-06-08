@@ -2,60 +2,16 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
 
--- ฟังก์ชันช่วยทำให้ GUI ลากได้
-local function makeDraggable(guiObject)
-    local dragging
-    local dragInput
-    local dragStart
-    local startPos
-
-    local function update(input)
-        local delta = input.Position - dragStart
-        guiObject.Position = UDim2.new(
-            math.clamp(startPos.X.Scale, 0, 1),
-            math.clamp(startPos.X.Offset + delta.X, 0, workspace.CurrentCamera.ViewportSize.X - guiObject.AbsoluteSize.X),
-            math.clamp(startPos.Y.Scale, 0, 1),
-            math.clamp(startPos.Y.Offset + delta.Y, 0, workspace.CurrentCamera.ViewportSize.Y - guiObject.AbsoluteSize.Y)
-        )
-    end
-
-    guiObject.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = input.Position
-            startPos = guiObject.Position
-
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-
-    guiObject.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            dragInput = input
-        end
-    end)
-
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            update(input)
-        end
-    end)
-end
-
-local function desaturateColor(color)
-    local avg = (color.R + color.G + color.B) / 3
-    return Color3.new(avg * 0.2 + color.R * 0.8, avg * 0.2 + color.G * 0.8, avg * 0.2 + color.B * 0.8)
-end
-
 -- GUI หลัก
 local MainGui = Instance.new("ScreenGui")
 MainGui.Name = "MusicGui"
 MainGui.Parent = PlayerGui
 MainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local function desaturateColor(color)
+    local avg = (color.R + color.G + color.B) / 3
+    return Color3.new(avg * 0.2 + color.R * 0.8, avg * 0.2 + color.G * 0.8, avg * 0.2 + color.B * 0.8)
+end
 
 -- ปุ่ม Toggle GUI
 local ToggleButton = Instance.new("TextButton")
@@ -74,7 +30,41 @@ local ToggleUICorner = Instance.new("UICorner")
 ToggleUICorner.CornerRadius = UDim.new(0, 10)
 ToggleUICorner.Parent = ToggleButton
 
-makeDraggable(ToggleButton) -- ทำให้ปุ่ม E ลากได้
+-- ฟังก์ชันให้ GUI ลากได้
+local function makeDraggable(gui)
+    local dragging = false
+    local dragInput, mousePos, framePos
+
+    gui.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            mousePos = input.Position
+            framePos = gui.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    gui.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - mousePos
+            gui.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X,
+                                    framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+        end
+    end)
+end
+
+makeDraggable(ToggleButton)
 
 -- GUI เพลง
 local Frame = Instance.new("Frame")
@@ -91,7 +81,7 @@ local FrameCorner = Instance.new("UICorner")
 FrameCorner.CornerRadius = UDim.new(0, 15)
 FrameCorner.Parent = Frame
 
-makeDraggable(Frame) -- ทำให้กรอบเพลงหลักลากได้
+makeDraggable(Frame)
 
 -- ปุ่ม Minimize และ Close
 local MinimizeButton = Instance.new("TextButton")
@@ -148,10 +138,11 @@ local TextBoxCorner = Instance.new("UICorner")
 TextBoxCorner.CornerRadius = UDim.new(0, 10)
 TextBoxCorner.Parent = TextBox
 
--- ปุ่มควบคุมเพลง
-local function createButton(name, pos, text, color)
+-- ปุ่มเพิ่มเสียงและลดเสียง
+local function createVolumeButton(name, pos, text, color)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.3, 0, 0, 30)
+    btn.Name = name
+    btn.Size = UDim2.new(0.25, 0, 0, 30)
     btn.Position = pos
     btn.Text = text
     btn.BackgroundColor3 = desaturateColor(color)
@@ -166,14 +157,31 @@ local function createButton(name, pos, text, color)
     return btn
 end
 
-local PlayButton = createButton("Play", UDim2.new(0.1,0,0.5,0), "เล่นเพลง", Color3.fromRGB(0,200,0))
-local StopButton = createButton("Stop", UDim2.new(0.6,0,0.5,0), "หยุดเพลง", Color3.fromRGB(200,0,0))
-local ResumeButton = createButton("Resume", UDim2.new(0.1,0,0.7,0), "เล่นต่อ", Color3.fromRGB(0,0,200))
+local VolumeDownButton = createVolumeButton("VolumeDown", UDim2.new(0.1, 0, 0, 90), "เสียงลด", Color3.fromRGB(200, 0, 0))
+local VolumeUpButton = createVolumeButton("VolumeUp", UDim2.new(0.4, 0, 0, 90), "เสียงเพิ่ม", Color3.fromRGB(0, 200, 0))
 
--- เพิ่มปุ่มลดเสียง
-local VolumeDownButton = createButton("VolDown", UDim2.new(0.6,0,0.7,0), "ลดเสียง", Color3.fromRGB(255, 140, 0))
--- เพิ่มปุ่มเพิ่มเสียง
-local VolumeUpButton = createButton("VolUp", UDim2.new(0.35,0,0.7,0), "เพิ่มเสียง", Color3.fromRGB(0, 140, 255))
+-- ปุ่มควบคุมเพลง
+local function createButton(name, pos, text, color)
+    local btn = Instance.new("TextButton")
+    btn.Name = name
+    btn.Size = UDim2.new(0.25, 0, 0, 30)
+    btn.Position = pos
+    btn.Text = text
+    btn.BackgroundColor3 = desaturateColor(color)
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    btn.BorderSizePixel = 0
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextScaled = true
+    btn.Parent = Frame
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0,10)
+    corner.Parent = btn
+    return btn
+end
+
+local PlayButton = createButton("Play", UDim2.new(0.1,0,0,130), "เล่นเพลง", Color3.fromRGB(0,200,0))
+local StopButton = createButton("Stop", UDim2.new(0.4,0,0,130), "หยุดเพลง", Color3.fromRGB(200,0,0))
+local ResumeButton = createButton("Resume", UDim2.new(0.7,0,0,130), "เล่นต่อ", Color3.fromRGB(0,0,200))
 
 -- Sound
 local Sound = Instance.new("Sound")
@@ -198,12 +206,16 @@ ResumeButton.MouseButton1Click:Connect(function()
     end
 end)
 
-VolumeDownButton.MouseButton1Click:Connect(function()
-    Sound.Volume = math.clamp(Sound.Volume - 0.1, 0, 1)
+VolumeUpButton.MouseButton1Click:Connect(function()
+    if Sound.Volume < 1 then
+        Sound.Volume = math.min(1, Sound.Volume + 0.1)
+    end
 end)
 
-VolumeUpButton.MouseButton1Click:Connect(function()
-    Sound.Volume = math.clamp(Sound.Volume + 0.1, 0, 1)
+VolumeDownButton.MouseButton1Click:Connect(function()
+    if Sound.Volume > 0 then
+        Sound.Volume = math.max(0, Sound.Volume - 0.1)
+    end
 end)
 
 CloseButton.MouseButton1Click:Connect(function()
@@ -229,3 +241,28 @@ ByLabel.Size = UDim2.new(0, 200, 0, 20)
 ByLabel.AnchorPoint = Vector2.new(1, 1)
 ByLabel.Position = UDim2.new(1, -10, 1, -10)
 ByLabel.TextScaled = true
+ByLabel.Parent = Frame
+
+-- ข้อความมุมซ้ายบน GUI เพลง
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Text = "Music-Hub V 0.1.2"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Size = UDim2.new(1, -120, 0, 30)
+TitleLabel.Position = UDim2.new(0, 10, 0, 5)
+TitleLabel.TextScaled = true
+TitleLabel.Font = Enum.Font.SourceSansBold
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.TextYAlignment = Enum.TextYAlignment.Center
+TitleLabel.ZIndex = 10
+TitleLabel.Parent = Frame
+
+-- การแจ้งเตือน
+local version = "V 0.1.2"
+pcall(function()
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Music-Hub " .. version,
+        Text = "โหลดเสร็จสิ้น!",
+        Duration = 5
+    })
+end)
