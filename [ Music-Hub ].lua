@@ -262,7 +262,7 @@ ByLabel.Parent = Frame
 
 -- ชื่อ GUI ด้านบนซ้าย
 local TitleLabel = Instance.new("TextLabel")
-TitleLabel.Text = "Music-Hub V 0.1.2"
+TitleLabel.Text = "Music-Hub V.1.2"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TitleLabel.BackgroundTransparency = 1
 TitleLabel.Size = UDim2.new(1, -120, 0, 30)
