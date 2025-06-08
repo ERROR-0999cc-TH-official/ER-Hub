@@ -17,7 +17,7 @@ end
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0, 32, 0, 32)
 ToggleButton.Position = UDim2.new(0, 10, 0, 10)
-ToggleButton.Text = "E"
+ToggleButton.Text = "M"
 ToggleButton.BackgroundColor3 = desaturateColor(Color3.fromRGB(255,255,255))
 ToggleButton.BackgroundTransparency = 0.3
 ToggleButton.TextColor3 = Color3.fromRGB(0,0,0)
