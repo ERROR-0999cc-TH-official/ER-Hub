@@ -234,9 +234,78 @@ VolumeDownButton.MouseButton1Click:Connect(function()
     Sound.Volume = math.clamp(Sound.Volume - 0.2, 0, 10)
 end)
 
+-- กล่องยืนยัน
+local ConfirmGui = Instance.new("ScreenGui")
+ConfirmGui.Name = "ConfirmCloseGui"
+ConfirmGui.Parent = PlayerGui
+ConfirmGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ConfirmGui.Enabled = false
+
+local ConfirmFrame = Instance.new("Frame")
+ConfirmFrame.Size = UDim2.new(0, 150, 0, 100)
+ConfirmFrame.Position = UDim2.new(0.5, -75, 0.5, -50)
+ConfirmFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ConfirmFrame.BorderSizePixel = 0
+ConfirmFrame.Parent = ConfirmGui
+
+local ConfirmCorner = Instance.new("UICorner")
+ConfirmCorner.CornerRadius = UDim.new(0, 10)
+ConfirmCorner.Parent = ConfirmFrame
+
+local ConfirmText = Instance.new("TextLabel")
+ConfirmText.Size = UDim2.new(1, -20, 0, 40)
+ConfirmText.Position = UDim2.new(0, 10, 0, 5)
+ConfirmText.Text = "คุณต้องการที่จะปิดใช้งานใช่ไหม"
+ConfirmText.TextColor3 = Color3.fromRGB(255, 255, 255)
+ConfirmText.BackgroundTransparency = 1
+ConfirmText.TextWrapped = true
+ConfirmText.TextScaled = true
+ConfirmText.Parent = ConfirmFrame
+
+local CancelBtn = Instance.new("TextButton")
+CancelBtn.Size = UDim2.new(0.4, 0, 0, 30)
+CancelBtn.Position = UDim2.new(0.05, 0, 1, -40)
+CancelBtn.Text = "ยกเลิก"
+CancelBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+CancelBtn.TextColor3 = Color3.new(1, 1, 1)
+CancelBtn.Font = Enum.Font.SourceSansBold
+CancelBtn.TextScaled = true
+CancelBtn.Parent = ConfirmFrame
+
+local OkBtn = Instance.new("TextButton")
+OkBtn.Size = UDim2.new(0.4, 0, 0, 30)
+OkBtn.Position = UDim2.new(0.55, 0, 1, -40)
+OkBtn.Text = "ตกลง"
+OkBtn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+OkBtn.TextColor3 = Color3.new(1, 1, 1)
+OkBtn.Font = Enum.Font.SourceSansBold
+OkBtn.TextScaled = true
+OkBtn.Parent = ConfirmFrame
+
+-- ขอบโค้ง
+for _, btn in ipairs({CancelBtn, OkBtn}) do
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = btn
+end
+
+-- กดปุ่ม X ให้แสดงกล่องยืนยัน
 CloseButton.MouseButton1Click:Connect(function()
-    if MainGui and MainGui.Parent then
-        MainGui:Destroy()
+    ConfirmGui.Enabled = true
+end)
+
+-- ปุ่มยกเลิก
+CancelBtn.MouseButton1Click:Connect(function()
+    ConfirmGui.Enabled = false
+end)
+
+-- ปุ่มตกลง: ซ่อน GUI ทั้งหมด
+OkBtn.MouseButton1Click:Connect(function()
+    ConfirmGui:Destroy()
+    for _, gui in ipairs(PlayerGui:GetChildren()) do
+        if gui:IsA("ScreenGui") and gui.Name ~= "ConfirmCloseGui" then
+            gui.Enabled = false
+        end
     end
 end)
 
